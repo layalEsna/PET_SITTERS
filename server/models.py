@@ -48,6 +48,16 @@ class PetOwner(db.Model, SerializerMixin):
     serialize_only = ('id', 'user_name')
 
 
+class PetSitter(db.Model, SerializerMixin):
+    __tablename__ = 'pet_sitters'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False, unique=True)           
+    location = db.Column(db.String, nullable=False)
+    price = db.Column(db.Integer, nullable=False)
+
+
+
 
 
 
