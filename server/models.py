@@ -141,6 +141,9 @@ class Appointment(db.Model, SerializerMixin):
         if not pet_sitter:
             raise ValueError(f'No pet sitter found with id {pet_sitter_id}')
         return pet_sitter_id
+    
+    serialize_only = ('id', 'date', 'duration', 'pet_owners_id', 'pet_sitters_id')
+
 
 
 
