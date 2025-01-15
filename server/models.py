@@ -91,6 +91,13 @@ class PetSitter(db.Model, SerializerMixin):
     serialize_only = ('id', 'name', 'location', 'price')
 
 
+class Appointment(db.Model, SerializerMixin):
+    __tablename__ = 'appointments'
+
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.DateTime, nullable=False)
+    duration = db.Column(db.Integer, nullable=False)
+
         
 
 
