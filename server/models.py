@@ -161,7 +161,20 @@ class Pet(db.Model, SerializerMixin):
     pet_owner = db.relationship('PetOwner', back_populates='pets')
 
 
+    @validates('pet_name')
+    def pet_name_validate(self, key, pet_name):
+        if not pet_name or not isinstance(pet_name, str):
+            raise ValueError('Pet name is required and must be a string.')
+        return pet_name
+    
+    @validates('pet_type')
+    def pet_type_validate(self, key, pet_type):
 
+        if not pet_type or pet_type not in self.VALID_PET_TYPES:
+            raise ValueError('Pet type must be one of: cat, dog, bird')
+        return pet_type
+
+    
         
 
 
