@@ -98,6 +98,10 @@ class Appointment(db.Model, SerializerMixin):
     date = db.Column(db.DateTime, nullable=False)
     duration = db.Column(db.Integer, nullable=False)
 
+    pet_owners_id = db.Column(db.Integer, ForeignKey('pet_owners.id'), nullable=False)
+    pet_sitters_id = db.Column(db.Integer, ForeignKey('pet_sitters.id'), nullable=False)
+
+
         
 
 
