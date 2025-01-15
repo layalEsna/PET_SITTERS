@@ -15,6 +15,7 @@ sqlalchemy-serializer = "*"
 sqlalchemy = "*"
 flask-sqlalchemy = "*"
 flask-bcrypt = "*"
+geopy = "*"
 
 [requires]
 python_full_version = "3.8.13"

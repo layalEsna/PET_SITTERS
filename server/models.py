@@ -7,6 +7,9 @@ from sqlalchemy.orm import validates, relationship
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.ext.associationproxy import association_proxy
 import re
+from geopy.geocoders import Nominatim
+from geopy.exc import GeocoderTimedOut
+
 # Local imports
 from config import db  # This imports the db instance defined in config.py
 
@@ -55,6 +58,41 @@ class PetSitter(db.Model, SerializerMixin):
     name = db.Column(db.String, nullable=False, unique=True)           
     location = db.Column(db.String, nullable=False)
     price = db.Column(db.Integer, nullable=False)
+
+    @validates('name')
+    def name_validate(self, key, name):
+        if not name or not isinstance(name, str):
+            raise ValueError('Name is required and must be a string.')
+        return name
+    
+
+    def location_validate(self, location):
+        geolocator = Nominatim(user_agent="myGeocoder")
+        try:
+            geo_location = geolocator.geocode(location, timeout=10)  # Increased timeout to 10 seconds
+            if geo_location:
+                self.latitude = geo_location.latitude
+                self.longitude = geo_location.longitude
+            else:
+                raise ValueError("Unable to geocode the location.")
+        except GeocoderTimedOut:
+            raise ValueError("Geocoding service timed out.")
+        except Exception as e:
+            raise ValueError(f"An error occurred during geocoding: {e}")
+        
+    @validates('price')
+    def price_validate(self, key, price):
+        if not price or not isinstance(price, int):
+            raise ValueError('price is required and must be an integer.')
+        if price < 50 or price > 80:
+            raise ValueError('Price must be between 50 and 80 inclusive.')
+        return price
+
+        
+
+
+
+
 
 
 
