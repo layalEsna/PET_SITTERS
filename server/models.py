@@ -145,6 +145,18 @@ class Appointment(db.Model, SerializerMixin):
     serialize_only = ('id', 'date', 'duration', 'pet_owners_id', 'pet_sitters_id')
 
 
+class Pet(db.Model, SerializerMixin):
+    __tablename__ = 'pets'
+
+    VALID_PET_TYPES = ['cat', 'dog', 'bird']
+
+    id = db.Column(db.Integer, primary_key=True)
+    pet_name = db.Column(db.String, nullable=False, unique=True)           
+    pet_type = db.Column(db.String, nullable=False, unique=True)  
+
+    owner_id = db.Column(db.Integer, db.ForeignKey('pet_owners.id'), nullable=False)
+    pet_owner = db.relationship('PetOwner', back_populates='pets')
+
 
 
         
