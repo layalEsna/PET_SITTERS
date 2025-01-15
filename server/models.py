@@ -36,6 +36,17 @@ class PetOwner(db.Model, SerializerMixin):
 
     def check_password(self, password):
         return bcrypt.check_password_hash(self._hash_password, password)
+    
+    @validates('user_name')
+    def user_name_validate(self, key, user_name):
+        if not user_name or not isinstance(user_name, str):
+            raise ValueError('Username is required and must be a string.')
+        if len(user_name) < 5:
+            raise ValueError('Username must be at least 5 characters long.')
+        return user_name
+    
+    serialize_only = ('id', 'user_name')
+
 
 
 
