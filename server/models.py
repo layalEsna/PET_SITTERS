@@ -24,6 +24,9 @@ class PetOwner(db.Model, SerializerMixin):
     user_name = db.Column(db.String, nullable=False, unique=True)
     _hash_password = db.Column(db.String, nullable=False)
 
+    appointments = db.relationship('Appointment', back_populates='pet_owner', cascade='all, delete-orphan')
+    
+
     @property
     def password(self):
         raise AttributeError('Password is not a readable attribute')
@@ -58,6 +61,9 @@ class PetSitter(db.Model, SerializerMixin):
     name = db.Column(db.String, nullable=False, unique=True)           
     location = db.Column(db.String, nullable=False)
     price = db.Column(db.Integer, nullable=False)
+
+    appointments = db.relationship('Appointment', back_populates='pet_sitter', cascade='all, delete-orphan', )
+
 
     @validates('name')
     def name_validate(self, key, name):
@@ -100,6 +106,10 @@ class Appointment(db.Model, SerializerMixin):
 
     pet_owners_id = db.Column(db.Integer, ForeignKey('pet_owners.id'), nullable=False)
     pet_sitters_id = db.Column(db.Integer, ForeignKey('pet_sitters.id'), nullable=False)
+
+    pet_owner = db.relationship('PetOwner', back_populates='appointments')
+    pet_sitter = db.relationship('PetSitter', back_populates='appointments')
+
 
 
         
