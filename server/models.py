@@ -87,6 +87,9 @@ class PetSitter(db.Model, SerializerMixin):
         if price < 50 or price > 80:
             raise ValueError('Price must be between 50 and 80 inclusive.')
         return price
+    
+    serialize_only = ('id', 'name', 'location', 'price')
+
 
         
 
