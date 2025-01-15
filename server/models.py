@@ -27,6 +27,9 @@ class PetOwner(db.Model, SerializerMixin):
     _hash_password = db.Column(db.String, nullable=False)
 
     appointments = db.relationship('Appointment', back_populates='pet_owner', cascade='all, delete-orphan')
+
+    pets = db.relationship('Pet', back_populates='pet_owner', cascade='all, delete-orphan')
+
     
 
     @property
