@@ -173,6 +173,10 @@ class Pet(db.Model, SerializerMixin):
         if not pet_type or pet_type not in self.VALID_PET_TYPES:
             raise ValueError('Pet type must be one of: cat, dog, bird')
         return pet_type
+    
+
+    serialize_only = ('id', 'pet_name', 'pet_type', 'owner_id')
+
 
     
         
