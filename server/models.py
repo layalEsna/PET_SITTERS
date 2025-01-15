@@ -10,6 +10,8 @@ import re
 from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut
 
+from datetime import datetime
+
 # Local imports
 from config import db  # This imports the db instance defined in config.py
 
@@ -109,6 +111,36 @@ class Appointment(db.Model, SerializerMixin):
 
     pet_owner = db.relationship('PetOwner', back_populates='appointments')
     pet_sitter = db.relationship('PetSitter', back_populates='appointments')
+
+    @validates('date')
+    def date_validate(self, key, value):
+        if not value or not isinstance(value, datetime):
+            raise ValueError('Date is required and must be valid datetime.')
+        if value < datetime.now():
+            raise ValueError('Date and time must be in the future.')
+        return value
+    
+    @validates('duration')
+    def duration_validate(self, key, duration):
+        if not duration or not isinstance(duration, int):
+            raise ValueError('Duration is required and must be an integer.')
+        if duration < 1 or duration > 10:
+            raise ValueError('Duration must be between 1 and 10 inclusive.')
+        return duration
+    
+    @validates('pet_owners_id')
+    def pet_owner_validate(self, key, pet_owner_id):
+        pet_owner = PetOwner.query.get(pet_owner_id)
+        if not pet_owner:
+            raise ValueError(f'No pet owner found with id {pet_owner_id}')
+        return pet_owner_id
+
+    @validates('pet_sitters_id')
+    def pet_sitter_validate(self, key, pet_sitter_id):
+        pet_sitter = PetSitter.query.get(pet_sitter_id)
+        if not pet_sitter:
+            raise ValueError(f'No pet sitter found with id {pet_sitter_id}')
+        return pet_sitter_id
 
 
 
