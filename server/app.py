@@ -24,40 +24,77 @@ class GetSitters(Resource):
             return make_response(jsonify({'error': 'No sitters found.'}), 404)
         return make_response(jsonify(sitters), 200)
     
+
 class Signup(Resource):
+    def options(self):
+        return '', 200
+
     def post(self):
+        try:
+            user_name = request.form.get('user_name')
+            password = request.form.get('password')
+            confirm_password = request.form.get('confirm_password')
+
+            if not all([user_name, password, confirm_password]):
+                return make_response(jsonify({'error': 'All fields are required'}), 400)
+
+            if password != confirm_password:
+                return make_response(jsonify({'error': 'Password not match.'}), 400)
+
+            if PetOwner.query.filter(PetOwner.user_name == user_name).first():
+                return make_response(jsonify({'error': 'Username already exists.'}), 400)
+
             
-      try:
-        user_name = request.form.get('user_name')
-        password =request.form.get('password')
-        confirm_password = request.form.get('confirm_password')
+            new_user = PetOwner(
+                user_name=user_name,
+                password=password
+            )
 
-        if not all([user_name, password, confirm_password]):
-            return make_response(jsonify({'error': 'All fields are required'}), 400)
-        if password != confirm_password:
-            return make_response(jsonify({'error': 'Password not match.'}), 400)
-        if PetOwner.query.filter(PetOwner.user_name==user_name).first():
-            return make_response(jsonify({'error': 'Username already exists.'}), 400)
+            db.session.add(new_user)
+            db.session.commit()
+
+            response = make_response(jsonify({'message': 'Successful signup'}), 201)
+            return response
+
+        except Exception as e:
+            logging.error(f'Error during signup: {e}')
+            return make_response(jsonify({'error': 'Server error.'}), 500)
+    
+# class Signup(Resource):
+#     def options(self):
+#         return '', 200
+    
+#     def post(self):
+      
+            
+#       try:
+#         user_name = request.form.get('user_name')
+#         password =request.form.get('password')
+#         confirm_password = request.form.get('confirm_password')
+
+#         if not all([user_name, password, confirm_password]):
+#             return make_response(jsonify({'error': 'All fields are required'}), 400)
+#         if password != confirm_password:
+#             return make_response(jsonify({'error': 'Password not match.'}), 400)
+#         if PetOwner.query.filter(PetOwner.user_name==user_name).first():
+#             return make_response(jsonify({'error': 'Username already exists.'}), 400)
 
         
-        new_user = PetOwner(
-            user_name = user_name,
-            password = password
-        )
+#         new_user = PetOwner(
+#             user_name = user_name,
+#             password = password
+#         )
         
-        db.session.add(new_user)
-        db.session.commit()
-        # session['user_id'] = new_user.id
+#         db.session.add(new_user)
+#         db.session.commit()
+#         # session['user_id'] = new_user.id
 
-        response = make_response(jsonify({'message': 'Successful signup'}), 201)
+#         response = make_response(jsonify({'message': 'Successful signup'}), 201)
         
-        return response
-      except Exception as e:
-          logging.error(f'Error during signup: {e}')
-          return make_response(jsonify({'error': 'Server error.'}), 500)
-
-
-
+#         return response
+#       except Exception as e:
+#           logging.error(f'Error during signup: {e}')
+#           return make_response(jsonify({'error': 'Server error.'}), 500)
 
     
 api.add_resource(GetSitters, '/sitters')

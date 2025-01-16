@@ -18,7 +18,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.json.compact = False
 
-CORS(app, resources={r"/*": {"origins": "http://localhost:3001"}})  # Allow CORS for the React frontend
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})  # Allow CORS for the React frontend
 
 
 # Define metadata, instantiate db

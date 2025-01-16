@@ -8,7 +8,7 @@ function SignupForm() {
     // const { confirm_password, ...signupData } = values
     const navigate = useNavigate()
     const [errorMessage, setErrorMessage] = useState('')
-    
+
     const passwordPattern = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*]).{8,}$/
 
     const formik = useFormik({
@@ -36,12 +36,13 @@ function SignupForm() {
             console.log('Submitting form values:', values);
 
 
-            fetch('http://localhost:5000/signup', {
+            fetch('http://127.0.0.1:5000/signup', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: JSON.stringify(values),
+                // body: JSON.stringify(values),
+                body: new URLSearchParams(values).toString(),
             })
                 .then((res) => {
                     if (!res.ok) {
@@ -52,12 +53,12 @@ function SignupForm() {
                 .then((data) => {
                     console.log('Server response:', data); // Log server response
                     navigate('/sitters')
-                    
+
                 })
                 .catch((e) => {
                     setErrorMessage(e.message);
                     console.error('Network or server error:', e);
-                })                        
+                })
         }
     })
 
@@ -123,7 +124,7 @@ function SignupForm() {
             <br />
             <div>
                 <h3>Already have an account?</h3>
-                <button onClick={()=> navigate('/login')}>login</button>
+                <button onClick={() => navigate('/login')}>login</button>
             </div>
         </div>
     )
