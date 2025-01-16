@@ -32,12 +32,12 @@ class Signup(Resource):
         password =request.form.get('password')
         confirm_password = request.form.get('confirm_password')
 
-        # if not all([user_name, password, confirm_password]):
-        #     return make_response(jsonify({'error': 'All fields are required'}), 400)
-        # if password != confirm_password:
-        #     return make_response(jsonify({'error': 'Password not match.'}), 400)
-        # if PetOwner.query.filter(PetOwner.user_name==user_name).first():
-        #     return make_response(jsonify({'error': 'Username already exists.'}), 400)
+        if not all([user_name, password, confirm_password]):
+            return make_response(jsonify({'error': 'All fields are required'}), 400)
+        if password != confirm_password:
+            return make_response(jsonify({'error': 'Password not match.'}), 400)
+        if PetOwner.query.filter(PetOwner.user_name==user_name).first():
+            return make_response(jsonify({'error': 'Username already exists.'}), 400)
 
         
         new_user = PetOwner(
