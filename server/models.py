@@ -100,6 +100,10 @@ class PetSitter(db.Model, SerializerMixin):
         return price
     
     serialize_only = ('id', 'name', 'location', 'price')
+    def to_dict(self):
+        return {
+            field: getattr(self, field) for field in self.serialize_only
+        }
 
 
 class Appointment(db.Model, SerializerMixin):
