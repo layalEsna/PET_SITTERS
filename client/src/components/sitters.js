@@ -16,6 +16,22 @@ function Sitters() {
         .catch(e=> console.error(e))
     }, [])
 
+    return (
+        <div>
+            <h1>Pet Sitters</h1>
+            
+            {sitters.map(sitter => (
+                <div key={sitter.id}>
+                <button>Book Appointment with: {sitter.name}</button>
+                    <p>Address: {sitter.location}</p>
+                    <p>Price per day: {sitter.price}</p>
+                    </div>
+
+            ))}
+
+        </div>
+    )
+
 
     
 }
