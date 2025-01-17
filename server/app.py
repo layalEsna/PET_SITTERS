@@ -15,6 +15,8 @@ from models import PetOwner, PetSitter, Appointment, Pet
 @app.route('/')
 def index():
     return '<h1>Project Server</h1>'
+
+
 class GetSitters(Resource):
 
     def get(self):
@@ -24,6 +26,15 @@ class GetSitters(Resource):
             return make_response(jsonify({'error': 'No sitters found.'}), 404)
         return make_response(jsonify(sitters), 200)
     
+    def sitter_by_id(self, id):
+        try:
+            sitter = PetSitter.query.filter(PetSitter.id==id).first()
+            if not sitter:
+                return make_response(jsonify({'error': f'Sitter with ID: {id} not found'}), 404)
+            return make_response(jsonify(sitter), 200)
+        except Exception as e:
+            logging.error('Failed to get sitter.')
+            return make_response(jsonify({'error': f'Network or server error: {e}'}), 500)
 
 class Signup(Resource):
     def options(self):
