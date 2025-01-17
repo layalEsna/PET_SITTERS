@@ -26,7 +26,7 @@ class GetSitters(Resource):
             return make_response(jsonify({'error': 'No sitters found.'}), 404)
         return make_response(jsonify(sitters), 200)
     
-    def sitter_by_id(self, id):
+    def get_sitter_by_id(self, id):
         try:
             sitter = PetSitter.query.filter(PetSitter.id==id).first()
             if not sitter:
