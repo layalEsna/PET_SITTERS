@@ -60,45 +60,29 @@ class Signup(Resource):
             logging.error(f'Error during signup: {e}')
             return make_response(jsonify({'error': 'Server error.'}), 500)
     
-# class Signup(Resource):
-#     def options(self):
-#         return '', 200
-    
-#     def post(self):
-      
-            
-#       try:
-#         user_name = request.form.get('user_name')
-#         password =request.form.get('password')
-#         confirm_password = request.form.get('confirm_password')
+class Login(Resource):
 
-#         if not all([user_name, password, confirm_password]):
-#             return make_response(jsonify({'error': 'All fields are required'}), 400)
-#         if password != confirm_password:
-#             return make_response(jsonify({'error': 'Password not match.'}), 400)
-#         if PetOwner.query.filter(PetOwner.user_name==user_name).first():
-#             return make_response(jsonify({'error': 'Username already exists.'}), 400)
+    def user_login(self):
 
+        try:
+            user_name = request.form.get('user_name')
+            password = request.form.get('password')
+
+            if not all([user_name, password]):
+                return make_response(jsonify({'error': 'All fields are required.'}), 400)
+            user = PetOwner.query.filter(PetOwner.user_name==user_name).first()
+            if not user:
+                return make_response(jsonify({'error': 'Invalid username or password.'}), 401)
+            if not user.check_password(password):
+                return make_response(jsonify({'error': 'Invalid username or password.'}), 401)
+            return make_response(jsonify({'message': 'Successful login.'}), 200)
+        except Exception as e:
+            logging.error(f'An error occured during login: {e}')
+            return make_response(jsonify({'error': 'Network or server error.'}), 500)
         
-#         new_user = PetOwner(
-#             user_name = user_name,
-#             password = password
-#         )
-        
-#         db.session.add(new_user)
-#         db.session.commit()
-#         # session['user_id'] = new_user.id
-
-#         response = make_response(jsonify({'message': 'Successful signup'}), 201)
-        
-#         return response
-#       except Exception as e:
-#           logging.error(f'Error during signup: {e}')
-#           return make_response(jsonify({'error': 'Server error.'}), 500)
-
-    
 api.add_resource(GetSitters, '/sitters')
 api.add_resource(Signup, '/signup')
+api.add_resource(Login, '/login')
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
