@@ -63,6 +63,7 @@ class Signup(Resource):
 class Login(Resource):
 
     def user_login(self):
+        print("Login request received!")
 
         try:
             user_name = request.form.get('user_name')
@@ -79,7 +80,31 @@ class Login(Resource):
         except Exception as e:
             logging.error(f'An error occured during login: {e}')
             return make_response(jsonify({'error': 'Network or server error.'}), 500)
-        
+
+
+
+# class Login(Resource):
+#     def post(self):
+#         try:
+#             user_name = request.form.get('user_name')
+#             password = request.form.get('password')
+
+#             if not all([user_name, password]):
+#                 return make_response(jsonify({'error': 'All fields are required.'}), 400)
+
+#             user = PetOwner.query.filter(PetOwner.user_name == user_name).first()
+#             if not user:
+#                 return make_response(jsonify({'error': 'Invalid username or password.'}), 401)
+
+#             if not user.check_password(password):
+#                 return make_response(jsonify({'error': 'Invalid username or password.'}), 401)
+
+#             return make_response(jsonify({'message': 'Successful login.'}), 200)
+
+#         except Exception as e:
+#             logging.error(f'An error occurred during login: {e}')
+#             return make_response(jsonify({'error': 'Network or server error.'}), 500)
+             
 api.add_resource(GetSitters, '/sitters')
 api.add_resource(Signup, '/signup')
 api.add_resource(Login, '/login')
