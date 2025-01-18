@@ -7,7 +7,7 @@ import * as Yup from 'yup'
 function Appointment() {
     const { id } = useParams()
     const [sitter, setSitter] = useState({})
-    const [confirmationMessage, setConfirmationMessage] = useState('')
+    const [confirmationMessage, setConfirmationMessages] = useState([])
 
     useEffect(() => {
         fetch(`http://localhost:5000/sitters/${id}`)
@@ -60,15 +60,13 @@ function Appointment() {
                     }
                     return res.json()
             })
-                .then(data => {
-                setConfirmationMessage(`Appointment booked for ${values.pet_name}<br /> Date: ${values.date} Duration: ${values.duration} days, total price: $${sitter.price * values.duration}` )
+            .then(() => {
+                const newMessage = `Appointment with: ${sitter.name} booked for ${values.pet_name}, Date: ${values.date}, Duration: ${values.duration} days, total price: $${sitter.price * values.duration}`;
+                setConfirmationMessages((prevMessages) => [...prevMessages, newMessage]); // Append to array
             })
             .catch(e => console.error(e))
-        }
-
-
-
-    })
+    }
+})
 
     return (
         <div>
@@ -158,8 +156,12 @@ function Appointment() {
 
             </form>
             <div>
-                {confirmationMessage &&
-                    <p>{confirmationMessage}</p>}
+                <h2>Your Appointments:</h2>
+                <ul>
+                    {confirmationMessage.map((message, index)=>(
+                        <li key={index}>{message}</li>
+                    ))}
+                </ul>
             </div>
             
 
