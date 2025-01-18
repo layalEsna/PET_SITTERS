@@ -4,20 +4,25 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; // Im
 import Sitters from './Sitters'
 import SignupForm from "./SignupForm"
 import LoginForm from "./Login"
-import Appointment from "./Appointment";
+import Appointment from "./Appointment"
+import NavBar from "./NavBar"
 
 function App() {
   return (
     <Router>
-      <div>
-        <h1>Project Client</h1>;
+      <header>
+
+        <NavBar />
+        <h1>Pet Sitter App</h1>
+      </header>
+      <main>
         <Routes>
           <Route path='/sitters' element={<Sitters />} />
           <Route path='/signup' element={<SignupForm />} />
           <Route path="/login" element={<LoginForm />} />
           <Route path="/sitters/:id" element={<Appointment />} />
         </Routes>
-      </div>
+      </main>
     </Router>)
 }
 
