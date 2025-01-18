@@ -4,6 +4,7 @@
 from flask import request, make_response, jsonify
 from flask_restful import Resource
 import logging
+from datetime import datetime
 
 # Local imports
 from config import app, db, api  # Import the app, db, and api from config.py
@@ -95,33 +96,28 @@ class Login(Resource):
             logging.error(f'An error occured during login: {e}')
             return make_response(jsonify({'error': 'Network or server error.'}), 500)
 
+class Appointment(Resource):
 
+    def post(self):
+      try:
+        pet_name = request.form.get('pet_name')
+        pet_type = request.form.get('pet_type')
+        date = request.form.get('date')
+        duration = request.form.get('duration')
 
-# class Login(Resource):
-#     def post(self):
-#         try:
-#             user_name = request.form.get('user_name')
-#             password = request.form.get('password')
-
-#             if not all([user_name, password]):
-#                 return make_response(jsonify({'error': 'All fields are required.'}), 400)
-
-#             user = PetOwner.query.filter(PetOwner.user_name == user_name).first()
-#             if not user:
-#                 return make_response(jsonify({'error': 'Invalid username or password.'}), 401)
-
-#             if not user.check_password(password):
-#                 return make_response(jsonify({'error': 'Invalid username or password.'}), 401)
-
-#             return make_response(jsonify({'message': 'Successful login.'}), 200)
-
-#         except Exception as e:
-#             logging.error(f'An error occurred during login: {e}')
-#             return make_response(jsonify({'error': 'Network or server error.'}), 500)
+        if not all([pet_name, pet_type, date, duration]):
+            return make_response(jsonify({'error': 'All fields are required.'}), 400)
+        input_date = datetime.strptime(date, "%Y-%m-%d").date()
+        if input_date < datetime.today().date():
+            return make_response(jsonify({'error': 'Date must be in the future.'}), 400)
+        return make_response(jsonify({'message': 'Appointment created successfully.'}), 201)
+      except Exception as e:
+          return make_response(jsonify({'error': f'Network or server error: {e}'}),500)
              
 api.add_resource(GetSitters, '/sitters', '/sitters/<int:sitter_id>')
 api.add_resource(Signup, '/signup')
 api.add_resource(Login, '/login')
+api.add_resource(Appointment, '/appointment')
 
 if __name__ == '__main__':
     
