@@ -100,10 +100,11 @@ class Appointment(Resource):
 
     def post(self):
       try:
-        pet_name = request.form.get('pet_name')
-        pet_type = request.form.get('pet_type')
-        date = request.form.get('date')
-        duration = request.form.get('duration')
+        data = request.get_json()
+        pet_name = data.get('pet_name')
+        pet_type = data.get('pet_type')
+        date = data.get('date')
+        duration = data.get('duration')
 
         if not all([pet_name, pet_type, date, duration]):
             return make_response(jsonify({'error': 'All fields are required.'}), 400)

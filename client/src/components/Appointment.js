@@ -61,7 +61,7 @@ function Appointment() {
                     return res.json()
             })
                 .then(data => {
-                setConfirmationMessage(`Appointment booked for ${values.pet_name}, dat: ${values.date} duration: ${values.duration}, total price: $${sitter.price * values.duration}` )
+                setConfirmationMessage(`Appointment booked for ${values.pet_name}<br /> Date: ${values.date} Duration: ${values.duration} days, total price: $${sitter.price * values.duration}` )
             })
             .catch(e => console.error(e))
         }
@@ -130,9 +130,10 @@ function Appointment() {
                         id="duration"
                         name="duration"
                         value={formik.values.duration}
-                        onChange={e => formik.setFieldValue(duration, parseInt(e.target.value))}
+                        onChange={e => formik.setFieldValue('duration', parseInt(e.target.value))}
                         onBlur={formik.handleBlur}
                     >
+                        <option value=''>select one</option>
                         <option value='1'>1 day</option>
                         <option value='2'>2 days</option>
                         <option value='3'>3 days</option>
