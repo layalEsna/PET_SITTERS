@@ -104,6 +104,9 @@ class PetSitter(db.Model, SerializerMixin):
         return {
             field: getattr(self, field) for field in self.serialize_only
         }
+    
+    def __repr__(self):
+        return f"<PetSitter(id={self.id}, name={self.name}, location={self.location}, price={self.price})>" 
 
 
 class Appointment(db.Model, SerializerMixin):

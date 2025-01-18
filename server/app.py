@@ -1,7 +1,7 @@
 # Standard library imports
 
 # Remote library imports
-from flask import request, make_response, jsonify, session
+from flask import request, make_response, jsonify
 from flask_restful import Resource
 import logging
 
@@ -17,24 +17,27 @@ def index():
     return '<h1>Project Server</h1>'
 
 
+
+
 class GetSitters(Resource):
 
-    def get(self):
-
-        sitters = [sitter.to_dict()for sitter in PetSitter.query.all()]
-        if not sitters:
-            return make_response(jsonify({'error': 'No sitters found.'}), 404)
-        return make_response(jsonify(sitters), 200)
-    
-    def get_sitter_by_id(self, id):
+    def get(self, sitter_id=None):  
         try:
-            sitter = PetSitter.query.filter(PetSitter.id==id).first()
-            if not sitter:
-                return make_response(jsonify({'error': f'Sitter with ID: {id} not found'}), 404)
-            return make_response(jsonify(sitter), 200)
+            if sitter_id: 
+                sitter = PetSitter.query.get(sitter_id)
+                if not sitter:
+                    return make_response(jsonify({'error': f'Sitter with ID: {sitter_id} not found'}), 404)
+                return make_response(jsonify(sitter.to_dict()), 200)
+
+            
+            sitters = [sitter.to_dict() for sitter in PetSitter.query.all()]
+            if not sitters:
+                return make_response(jsonify({'error': 'No sitters found.'}), 404)
+            return make_response(jsonify(sitters), 200)
+
         except Exception as e:
-            logging.error('Failed to get sitter.')
-            return make_response(jsonify({'error': f'Network or server error: {e}'}), 500)
+            logging.error(f'Error fetching sitter(s): {e}')
+            return make_response(jsonify({'error': 'Internal server error'}), 500)
 
 class Signup(Resource):
     def options(self):
@@ -116,12 +119,13 @@ class Login(Resource):
 #             logging.error(f'An error occurred during login: {e}')
 #             return make_response(jsonify({'error': 'Network or server error.'}), 500)
              
-api.add_resource(GetSitters, '/sitters')
+api.add_resource(GetSitters, '/sitters', '/sitters/<int:sitter_id>')
 api.add_resource(Signup, '/signup')
 api.add_resource(Login, '/login')
 
 if __name__ == '__main__':
-    app.run(port=5000, debug=True)
+    
+    app.run(port=5000, debug=True, use_reloader=True)
 
 
 
