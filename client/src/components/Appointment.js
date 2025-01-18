@@ -161,6 +161,7 @@ function Appointment() {
                 {confirmationMessage &&
                     <p>{confirmationMessage}</p>}
             </div>
+            
 
         </div>
     )
