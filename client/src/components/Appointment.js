@@ -6,7 +6,8 @@ import * as Yup from 'yup'
 
 function Appointment() {
     const { id } = useParams()
-    const [sitter, setSitter] = useState('')
+    const [sitter, setSitter] = useState({})
+    const [confirmationMessage, setConfirmationMessage] = useState('')
 
     useEffect(() => {
         fetch(`http://localhost:5000/sitters/${id}`)
@@ -45,14 +46,122 @@ function Appointment() {
 
 
         }),
+        onSubmit: (values) => {
+            fetch('http://127.0.0.1:5000/appointment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(values)
+            })
+                .then(res => {
+                    if (!res.ok) {
+                    throw new Error('Failed to submit.')
+                    }
+                    return res.json()
+            })
+                .then(data => {
+                setConfirmationMessage(`Appointment booked for ${values.pet_name}, dat: ${values.date} duration: ${values.duration}, total price: $${sitter.price * values.duration}` )
+            })
+            .catch(e => console.error(e))
+        }
+
 
 
     })
 
-    return (
-        <div>
-            
-        </div>
-    )
+    // return (
+    //     <div>
+    //         <form onSubmit={formik.handleSubmit}>
+
+    //             <div>
+    //                 <label htmlFor="pet_name">Pet Name</label>
+    //                 <input
+    //                     id="pet_name"
+    //                     type="text"
+    //                     name="pet_name"
+    //                     value={formik.values.pet_name}
+    //                     onBlur={formik.handleBlur}
+    //                     onChange={formik.handleChange}
+
+    //                 />
+    //                 {formik.errors.pet_name && formik.touched.pet_name && (
+    //                     <div className="error">{formik.errors.pet_name}</div>
+    //                 )}
+    //             </div>
+    //             <br/>
+    //             <div>
+    //                 <label htmlFor="pet_type">Pet Type</label>
+    //                 <select
+    //                     id="pet_type"
+    //                     value={formik.values.pet_type}
+    //                     onChange={formik.handleChange}
+    //                     onBlur={formik.handleBlur}
+    //                 >
+    //                     <option value=''>select one</option>
+    //                     <option value='cat'>cat</option>
+    //                     <option value='dog'>dog</option>
+    //                     <option value='bird'>bird</option>
+    //                 </select>
+    //                 {formik.errors.pet_type && formik.touched.pet_type && (
+    //                     <div className="error">{formik.errors.pet_type}</div>
+    //                 )}
+    //             </div>
+    //             <br/>
+    //             <div>
+    //                 <label htmlFor="date">Date</label>
+    //                 <input
+    //                     id="date"
+    //                     type="date"
+    //                     name="date"
+    //                     value={formik.values.date}
+    //                     onBlur={formik.handleBlur}
+    //                     onChange={formik.handleChange}
+
+    //                 />
+    //                 {formik.errors.date && formik.touched.date && (
+    //                     <div className="error">{formik.errors.date}</div>
+    //                 )}
+    //             </div>
+    //             <br/>
+    //             <div>
+    //                 <label htmlFor="duration">Duration</label>
+    //                 <select
+    //                     id="duration"
+    //                     name="duration"
+    //                     value={formik.values.duration}
+    //                     onChange={e => formik.setFieldValue(duration, parseInt(e.target.value))}
+    //                     onBlur={formik.handleBlur}
+    //                 >
+    //                     <option value='1'>1 day</option>
+    //                     <option value='2'>2 days</option>
+    //                     <option value='3'>3 days</option>
+    //                     <option value='4'>4 days</option>
+    //                     <option value='5'>5 days</option>
+    //                     <option value='6'>6 days</option>
+    //                     <option value='7'>7 days</option>
+    //                     <option value='8'>8 days</option>
+    //                     <option value='9'>9 days</option>
+    //                     <option value='10'>10 days</option>
+    //                 </select>
+    //                 {formik.errors.duration && formik.touched.duration && (
+    //                     <div className="error">{formik.errors.duration}</div>
+    //                 )}
+    //             </div>
+    //             <br />
+    //             <div>
+    //                 <button type="submit">submit</button>
+    //             </div>
+
+                
+
+    //         </form>
+    //         <div>
+    //             {confirmationMessage &&
+    //                 <p>{confirmationMessage}</p>}
+    //         </div>
+
+    //     </div>
+    // )
 }
 export default Appointment
