@@ -1,40 +1,27 @@
 import React, { useEffect, useState } from "react"
-
+import { useNavigate } from 'react-router-dom'
 function Sitters() {
+
+    const navigate = useNavigate()
 
     const [sitters, setSitters] = useState([])
 
-    //     useEffect(() => {
-    //         console.log("Fetching sitters...")
-    //         fetch('http://localhost:3001/sitters')
-    //             .then(res => {
-    //                 if (!res.ok) {
-    //                 throw new Error('Failed to fetch sitters.')
-    //                 }
-    //                 return res.json()
-    //         })
-    //         .then((data) => {
-    //             setSitters(data); // Assuming you're storing the sitters data in state
-    //         })
-    //         .catch((error) => {
-    //             console.error('Fetch error:', error);
-    //         });
-    // }, []);
+    
     useEffect(() => {
         fetch('http://localhost:5000/sitters')
             .then((response) => {
                 if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                    throw new Error('Network response was not ok')
                 }
-                return response.json();
+                return response.json()
             })
             .then((data) => {
-                setSitters(data); // Assuming you're storing the sitters data in state
+                setSitters(data)
             })
             .catch((error) => {
-                console.error('Fetch error:', error);
-            });
-    }, []);
+                console.error('Fetch error:', error)
+            })
+    }, [])
 
 
 
@@ -44,7 +31,7 @@ function Sitters() {
 
             {sitters.map(sitter => (
                 <div key={sitter.id}>
-                    <button>Book Appointment with: {sitter.name}</button>
+                    <button onClick={()=> navigate(`/appointment/${sitter.id}`)}>Book Appointment with: {sitter.name}</button>
                     <p>Address: {sitter.location}</p>
                     <p>Price per day: {sitter.price}</p>
                 </div>

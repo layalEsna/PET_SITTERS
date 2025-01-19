@@ -3,8 +3,8 @@ function NavBar() {
     const navigate = useNavigate()
     return (
         <nav>
-            <button onClick={()=> navigate('/petsitters')}>Pet Sitters</button>
-            <button onClick={()=> navigate('/appointment')}>Appointment</button>
+            <button onClick={()=> navigate('/sitters')}>Pet Sitters</button>
+            {/* <button onClick={()=> navigate('/appointment')}>Appointment</button> */}
            
        </nav>
    ) 

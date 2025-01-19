@@ -12,15 +12,15 @@ function App() {
     <Router>
       <header>
 
-        <NavBar />
-        <h1>Pet Sitter App</h1>
+        {/* <NavBar /> */}
+        
       </header>
       <main>
         <Routes>
           <Route path='/sitters' element={<Sitters />} />
           <Route path='/signup' element={<SignupForm />} />
           <Route path="/login" element={<LoginForm />} />
-          <Route path="/sitters/:id" element={<Appointment />} />
+          <Route path="/appointment/:id" element={<Appointment />} />
         </Routes>
       </main>
     </Router>)

@@ -3,11 +3,16 @@ import React, { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
+import NavBar from "./NavBar"
 
 function Appointment() {
     const { id } = useParams()
     const [sitter, setSitter] = useState({})
-    const [confirmationMessage, setConfirmationMessages] = useState([])
+    const [confirmationMessage, setConfirmationMessages] = useState(() => {
+        const storeMessages = localStorage.getItem('confirmationMessage')
+        return storeMessages ? JSON.parse(storeMessages) : []
+
+    })
 
     useEffect(() => {
         fetch(`http://localhost:5000/sitters/${id}`)
@@ -22,6 +27,10 @@ function Appointment() {
             )
             .catch(e => console.error(`Network or server error: ${e}`))
     }, [id])
+
+    useEffect(() => {
+        localStorage.setItem('confirmationMessage', JSON.stringify(confirmationMessage));
+    }, [confirmationMessage])
 
     const formik = useFormik({
         initialValues: {
@@ -70,6 +79,10 @@ function Appointment() {
 
     return (
         <div>
+            <div>
+                <NavBar />
+            </div>
+            <br/>
             <form onSubmit={formik.handleSubmit}>
 
                 <div>
