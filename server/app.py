@@ -95,30 +95,70 @@ class Login(Resource):
         except Exception as e:
             logging.error(f'An error occured during login: {e}')
             return make_response(jsonify({'error': 'Network or server error.'}), 500)
-
+        
 class Appointment(Resource):
-
     def post(self):
-      try:
-        data = request.get_json()
-        pet_name = data.get('pet_name')
-        pet_type = data.get('pet_type')
-        date = data.get('date')
-        duration = data.get('duration')
+        
+            try:
+                data = request.get_json()
+                pet_name = data.get('pet_name')
+                pet_type = data.get('pet_type')
+                date = data.get('date')
+                duration = data.get('duration')
 
-        if not all([pet_name, pet_type, date, duration]):
-            return make_response(jsonify({'error': 'All fields are required.'}), 400)
-        input_date = datetime.strptime(date, "%Y-%m-%d").date()
-        if input_date < datetime.today().date():
-            return make_response(jsonify({'error': 'Date must be in the future.'}), 400)
-        return make_response(jsonify({'message': 'Appointment created successfully.'}), 201)
+                if not all([pet_name, pet_type, date, duration]):
+                    return make_response(jsonify({'error': 'All fields are required.'}), 400)
+                input_date = datetime.strptime(date, "%Y-%m-%d").date()
+                if input_date < datetime.today().date():
+                    return make_response(jsonify({'error': 'Date must be in the future.'}), 400)  
+
+                new_appointment = Appointment(
+                    pet_name=pet_name,
+                    pet_type=pet_type,
+                    date=input_date,
+                    duration=duration
+
+                ) 
+                db.session.add(new_appointment) 
+                db.session.commit()       
+
+
+                return make_response(jsonify(new_appointment.to_dict()), 201)
+            except Exception as e:
+                  return make_response(jsonify({'error': f'Network or server error: {e}'}),500)
+
+    def patch(self, appointment_id):
+        try:
+            updated_appointment = Appointment.query.get(appointment_id)
+            if not updated_appointment:
+                return make_response(jsonify({'error': f'Appointment with ID: {appointment_id} not found.'}), 404)
+            data = request.get_json()
+            for key, value in data.items():
+                setattr(updated_appointment,key, value)
+            db.session.commit()
+            return make_response(jsonify(updated_appointment.to_dict()), 200)
+
+        except Exception as e:
+            return make_response(jsonify({'error': f'Network or server error: {e}'}), 500)
+        
+    def delete(self, appointment_id):
+      try:
+        selected_appointment = Appointment.query.get(appointment_id)
+
+        if not selected_appointment:
+            return make_response(jsonify({'error': f'Appointment with ID: {appointment_id} not found'}, 404))
+        db.session.delete(selected_appointment)
+        db.session.commit()
+        return make_response(jsonify({'message': 'Appointment deleted successfully'}), 200)
       except Exception as e:
-          return make_response(jsonify({'error': f'Network or server error: {e}'}),500)
+          return make_response(jsonify({'error': f'Network or server error: {e}'}), 500)
+
+
              
 api.add_resource(GetSitters, '/sitters', '/sitters/<int:sitter_id>')
 api.add_resource(Signup, '/signup')
 api.add_resource(Login, '/login')
-api.add_resource(Appointment, '/appointment')
+api.add_resource(Appointment, '/appointment', '/appointment/<int:appointment_id>')
 
 if __name__ == '__main__':
     

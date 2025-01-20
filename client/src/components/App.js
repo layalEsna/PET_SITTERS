@@ -5,7 +5,7 @@ import Sitters from './Sitters'
 import SignupForm from "./SignupForm"
 import LoginForm from "./Login"
 import Appointment from "./Appointment"
-import NavBar from "./NavBar"
+// import NavBar from "./NavBar"
 
 function App() {
   return (

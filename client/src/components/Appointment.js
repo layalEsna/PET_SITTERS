@@ -65,24 +65,96 @@ function Appointment() {
             })
                 .then(res => {
                     if (!res.ok) {
-                    throw new Error('Failed to submit.')
+                        throw new Error('Failed to submit.')
                     }
                     return res.json()
+                })
+                .then(() => {
+                    const newMessage = {
+                        pet_name: values.pet_name,
+                        pet_type: values.pet_type,
+                        date: values.date,
+                        duration: values.duration,
+                        sitter_name: sitter.name,
+                        sitter_price: sitter.price * values.duration
+
+                    }
+
+                    setConfirmationMessages((prev) => [...prev, newMessage])
+                    formik.resetForm()
+                })
+                .catch(e => console.error(e))
+           
+        }
+    })
+
+    function handleEdit(appointment_id) {
+
+        const updatedData = {
+            pet_name: formik.values.pet_name,
+            pet_type: formik.values.pet_type,
+            date: formik.values.date,
+            duration: formik.values.duration,
+        }
+        fetch(`http://127.0.0.1:5000/appointment/${appointment_id}`, {
+            method: 'PATCH',
+
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updatedData)
+        })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error('Failed to update appointment.')
+                }
+                return res.json()
             })
-            .then(() => {
-                const newMessage = `Appointment with: ${sitter.name} booked for ${values.pet_name}, Date: ${values.date}, Duration: ${values.duration} days, total price: $${sitter.price * values.duration}`;
-                setConfirmationMessages((prevMessages) => [...prevMessages, newMessage]); // Append to array
+            .then(updatedAppointment => {
+                const updatedMessage = {
+                    id: updatedAppointment.id,
+                    pet_name: updatedAppointment.pet_name,
+                    pet_type: updatedAppointment.pet_type,
+                    date: updatedAppointment.date,
+                    duration: updatedAppointment.duration,
+                }
+
+                setConfirmationMessages(prevData => prevData.map(data =>
+                    data.id === updatedAppointment.id ? updatedMessage : data
+                ))
+
             })
-            .catch(e => console.error(e))
+            .catch(e => {
+                console.error(e)
+                alert('Failed to update appointment.')
+            })
+
     }
-})
+
+    function handleDelete(appointment_id) {
+        fetch(`http://127.0.0.1:5000/appointment/${appointment_id}`, {
+            method: 'DELETE'
+        })
+
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error('Failed to delete appointment.')
+                }
+                setConfirmationMessages(prevData =>
+                    prevData.filter(data => data.id !== appointment_id)
+                )
+            })
+            // .then(data => JSON.stringify(data))
+            .catch(e => console.error(e))
+        alert('Failed to delete appointment.')
+    }
 
     return (
         <div>
             <div>
                 <NavBar />
             </div>
-            <br/>
+            <br />
             <form onSubmit={formik.handleSubmit}>
 
                 <div>
@@ -100,7 +172,7 @@ function Appointment() {
                         <div className="error">{formik.errors.pet_name}</div>
                     )}
                 </div>
-                <br/>
+                <br />
                 <div>
                     <label htmlFor="pet_type">Pet Type</label>
                     <select
@@ -118,7 +190,7 @@ function Appointment() {
                         <div className="error">{formik.errors.pet_type}</div>
                     )}
                 </div>
-                <br/>
+                <br />
                 <div>
                     <label htmlFor="date">Date</label>
                     <input
@@ -134,7 +206,7 @@ function Appointment() {
                         <div className="error">{formik.errors.date}</div>
                     )}
                 </div>
-                <br/>
+                <br />
                 <div>
                     <label htmlFor="duration">Duration</label>
                     <select
@@ -165,18 +237,27 @@ function Appointment() {
                     <button type="submit">submit</button>
                 </div>
 
-                
+
 
             </form>
             <div>
                 <h2>Your Appointments:</h2>
                 <ul>
-                    {confirmationMessage.map((message, index)=>(
-                        <li key={index}>{message}</li>
+                    {confirmationMessage.map((appointment) => (
+                        <li key={appointment.id}>{`Appointment with: ${sitter.name} Pet Name: ${appointment.pet_name} Pet Type: ${appointment.pet_type} Date: ${appointment.date} Duration: ${appointment.duration} days, price: $${appointment.sitter_price}`}
+                            {/* <li key={appointment.id}> {appointment} */}
+                            <br />
+
+                            <button onClick={() => handleEdit(appointment.id)}>edit appointmentt</button>
+                            <button onClick={() => handleDelete(appointment.id)}>delete appointment</button>
+
+
+                        </li>
                     ))}
+
                 </ul>
             </div>
-            
+
 
         </div>
     )
