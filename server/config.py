@@ -20,7 +20,8 @@ app.json.compact = False
 
 CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})  # Allow CORS for the React frontend
 
-
+app.config['SECRET_KEY'] = 'your_secret_key_here'
+app.config['SESSION_TYPE'] = 'filesystem'
 # Define metadata, instantiate db
 metadata = MetaData(naming_convention={
     "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",

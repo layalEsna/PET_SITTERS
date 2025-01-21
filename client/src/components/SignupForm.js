@@ -39,10 +39,10 @@ function SignupForm() {
             fetch('http://127.0.0.1:5000/signup', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Type': 'application/json',
                 },
-                // body: JSON.stringify(values),
-                body: new URLSearchParams(values).toString(),
+                body: JSON.stringify(values),
+                // body: new URLSearchParams(values).toString(),
             })
                 .then((res) => {
                     if (!res.ok) {
