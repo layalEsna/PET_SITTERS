@@ -8,9 +8,9 @@ from flask_migrate import Migrate
 from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
+import os
 
 # Local imports
-
 
 # Instantiate app, set attributes
 app = Flask(__name__)
@@ -20,7 +20,7 @@ app.json.compact = False
 
 CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})  # Allow CORS for the React frontend
 
-app.config['SECRET_KEY'] = 'your_secret_key_here'
+app.config['SECRET_KEY'] = os.environ.get('FLASK_SECRET_KEY') 
 app.config['SESSION_TYPE'] = 'filesystem'
 # Define metadata, instantiate db
 metadata = MetaData(naming_convention={
