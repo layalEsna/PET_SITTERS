@@ -1,19 +1,30 @@
 # Standard library imports
 
-# Remote library imports
+# Remote library imports  login_manager
 from dotenv import load_dotenv
-load_dotenv()
+
 import os
 from flask import request, make_response, jsonify, session
 from flask_restful import Resource
 import logging
 from datetime import datetime
+from flask_login import login_user, current_user, login_required
+
+load_dotenv()
+
+
 print("FLASK_SECRET_KEY:", os.environ.get('FLASK_SECRET_KEY'))  # Add this line
 
 # Local imports
-from config import app, db, api  # Import the app, db, and api from config.py
+from config import app, db, api, login_manager  # Import the app, db, and api from config.py
 # Add your model imports (PetOwner, PetSitter, etc.)
 from models import PetOwner, PetSitter, Appointment, Pet
+
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return PetOwner.query.get(int(user_id))
 
 # Views go here!
 class ShowSession(Resource):
@@ -96,35 +107,66 @@ class Signup(Resource):
             return make_response(jsonify({'error': 'Server error.'}), 500)
 
 
+
+
 class Login(Resource):
-    def post(self): 
-        print("Login request received!")
-
-        try:
-            data = request.get_json()
-            user_name = data.get('user_name')
-            password = data.get('password')
-
-            if not all([user_name, password]):
-                return make_response(jsonify({'error': 'All fields are required.'}), 400)
-
-            user = PetOwner.query.filter(PetOwner.user_name == user_name).first()
-            if not user:
-                return make_response(jsonify({'error': 'Invalid username or password.'}), 401)
-
-            if not user.check_password(password):
-                return make_response(jsonify({'error': 'Invalid username or password.'}), 401)
-
-            session['user_id'] = user.id 
-            print(f"Session user_id after login: {session.get('user_id')}")
-            return make_response(jsonify({'message': 'Successful login.'}), 200)
-
-        except Exception as e:
-            logging.error(f'An error occurred during login: {e}')
-            return make_response(jsonify({'error': 'Network or server error.'}), 500)
-        
-class Appointment(Resource):
     def post(self):
+
+        print("Request JSON:", request.json)
+        data = request.get_json()
+        user_name = data.get('user_name')
+        password = data.get('password')
+
+        print("Username:", user_name, "Password:", password)
+
+        if not all([user_name, password]):
+            return make_response(jsonify({'error': 'All fields are required.'}), 400)
+
+        user = PetOwner.query.filter_by(user_name=user_name).first()
+        print("User Found:", user)
+        if not user or not user.check_password(password):
+            return make_response(jsonify({'error': 'Invalid username or password.'}), 401)
+
+        login_user(user)
+        
+        return make_response(jsonify({'message': 'Successful login.'}), 200)
+
+
+
+
+# class Login(Resource):
+#     def post(self): 
+#         print("Login request received!")
+
+#         try:
+#             data = request.get_json()
+#             user_name = data.get('user_name')
+#             password = data.get('password')
+
+#             if not all([user_name, password]):
+#                 return make_response(jsonify({'error': 'All fields are required.'}), 400)
+
+#             user = PetOwner.query.filter(PetOwner.user_name == user_name).first()
+#             if not user:
+#                 return make_response(jsonify({'error': 'Invalid username or password.'}), 401)
+
+#             if not user.check_password(password):
+#                 return make_response(jsonify({'error': 'Invalid username or password.'}), 401)
+
+#             session['user_id'] = user.id 
+#             print(f"Session user_id after login: {session.get('user_id')}")
+#             return make_response(jsonify({'message': 'Successful login.'}), 200)
+
+#         except Exception as e:
+#             logging.error(f'An error occurred during login: {e}')
+#             return make_response(jsonify({'error': 'Network or server error.'}), 500)
+        
+class Appointments(Resource):
+    @login_required
+    def post(self):
+            
+            pet_owners_id = current_user.id
+            
             print("POST /appointment endpoint called")
         
             try:
@@ -135,7 +177,8 @@ class Appointment(Resource):
                 date = data.get('date')
                 duration = data.get('duration')
                 sitters_id = data.get('sitters_id')
-                pet_owners_id = data.get('pet_owners_id') or session.get('user_id')
+                pet_owners_id = session.get('user_id')
+                # pet_owners_id = data.get('pet_owners_id') or session.get('user_id')
                 print(f"Session user_id: {pet_owners_id}")  # Add this to your POST method in Appointment
 
                 if not all([pet_name, pet_type, date, duration, sitters_id, pet_owners_id]):
@@ -163,10 +206,10 @@ class Appointment(Resource):
             except Exception as e:
                   return make_response(jsonify({'error': f'Network or server error: {e}'}),500)
             
-
+class AppointmentById(Resource):
 
     def patch(self, id):
-        print(f"PATCH /appointment/{id} endpoint called")
+        print(f"PATCH /appointments/{id} endpoint called")
         try:
             updated_appointment = Appointment.query.get(id)
             if not updated_appointment:
@@ -201,7 +244,13 @@ api.add_resource(ShowSession, '/sessions/<string:key>')
 api.add_resource(GetSitters, '/sitters', '/sitters/<int:sitter_id>')
 api.add_resource(Signup, '/signup')
 api.add_resource(Login, '/login')
-api.add_resource(Appointment,'/appointment' ,'/appointment/<int:id>')
+# api.add_resource(Appointments,'/appointments' ,'/appointments/<int:id>')
+api.add_resource(Appointments,'/appointments')
+api.add_resource(AppointmentById,'/appointments/<int:id>')
+
+# api.add_resource(Items, '/items', endpoint='items')
+# api.add_resource(ItemByID, '/items/<int:id>')
+# api.add_resource(Appointment,'/appointment')
 
 if __name__ == '__main__':
     

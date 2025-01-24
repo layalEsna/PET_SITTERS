@@ -9,7 +9,7 @@ from sqlalchemy.ext.associationproxy import association_proxy
 import re
 from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut
-
+from flask_login import UserMixin
 from datetime import datetime
 
 # Local imports
@@ -19,7 +19,7 @@ from config import db  # This imports the db instance defined in config.py
 bcrypt = Bcrypt()
 # Models go here!
 
-class PetOwner(db.Model, SerializerMixin):
+class PetOwner(db.Model, SerializerMixin, UserMixin):
     __tablename__ = 'pet_owners'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -116,9 +116,12 @@ class Appointment(db.Model, SerializerMixin):
     date = db.Column(db.DateTime, nullable=False)
     duration = db.Column(db.Integer, nullable=False)
 
-    pet_owners_id = db.Column(db.Integer, ForeignKey('pet_owners.id'), nullable=False)
-    pet_sitters_id = db.Column(db.Integer, ForeignKey('pet_sitters.id'), nullable=False)
+    pet_owners_id = db.Column(db.Integer, db.ForeignKey('pet_owners.id'), nullable=False)
+    pet_sitters_id = db.Column(db.Integer, db.ForeignKey('pet_sitters.id'), nullable=False)
 
+    pet_id = db.Column(db.Integer, db.ForeignKey('pets.id'), nullable=False)
+    pet = db.relationship('Pet', back_populates='appointments') 
+ 
     pet_owner = db.relationship('PetOwner', back_populates='appointments')
     pet_sitter = db.relationship('PetSitter', back_populates='appointments')
 
@@ -152,65 +155,7 @@ class Appointment(db.Model, SerializerMixin):
             raise ValueError(f'No pet sitter found with id {pet_sitter_id}')
         return pet_sitter_id
     
-    serialize_only = ('id', 'date', 'duration', 'pet_owners_id', 'pet_sitters_id', 'pet_owner.pets.pet_name', 'pet_owner.pets.pet_type')
-
-
-# class Appointment(db.Model, SerializerMixin):
-#     __tablename__ = 'appointments'
-
-#     id = db.Column(db.Integer, primary_key=True)
-#     date = db.Column(db.DateTime, nullable=False)
-#     duration = db.Column(db.Integer, nullable=False)
-
-#     pet_owners_id = db.Column(db.Integer, ForeignKey('pet_owners.id'), nullable=False)
-#     pet_sitters_id = db.Column(db.Integer, ForeignKey('pet_sitters.id'), nullable=False)
-
-#     pet_owner = db.relationship('PetOwner', back_populates='appointments')
-#     pet_sitter = db.relationship('PetSitter', back_populates='appointments')
-
-#     @validates('date')
-#     def date_validate(self, key, value):
-#         if not value or not isinstance(value, datetime):
-#             raise ValueError('Date is required and must be valid datetime.')
-#         if value < datetime.now():
-#             raise ValueError('Date and time must be in the future.')
-#         return value
-    
-#     @validates('duration')
-#     def duration_validate(self, key, duration):
-#         if not duration or not isinstance(duration, int):
-#             raise ValueError('Duration is required and must be an integer.')
-#         if duration < 1 or duration > 10:
-#             raise ValueError('Duration must be between 1 and 10 inclusive.')
-#         return duration
-    
-#     @validates('pet_owners_id')
-#     def pet_owner_validate(self, key, pet_owner_id):
-#         pet_owner = PetOwner.query.get(pet_owner_id)
-#         if not pet_owner:
-#             raise ValueError(f'No pet owner found with id {pet_owner_id}')
-#         return pet_owner_id
-
-#     @validates('pet_sitters_id')
-#     def pet_sitter_validate(self, key, pet_sitter_id):
-#         pet_sitter = PetSitter.query.get(pet_sitter_id)
-#         if not pet_sitter:
-#             raise ValueError(f'No pet sitter found with id {pet_sitter_id}')
-#         return pet_sitter_id
-    
-#     def to_dict(self):
-#         return {
-#             'id': self.id,
-#             'date': self.date.strftime('%Y-%m-%d'),
-#             'duration': self.duration,
-#             'pet_owner': self.pet_owner.to_dict(),
-#             'pet_sitter': self.pet_sitter.to_dict(),
-#             'pet_name': self.pet_owner.pets[0].pet_name,  # Access pet_name through the relationship
-#             'pet_type': self.pet_owner.pets[0].pet_type   # Access pet_type through the relationship
-#         }
-    
-#     # serialize_only = ('id', 'date', 'duration', 'pet_owners_id', 'pet_sitters_id')
-
+    serialize_only = ('id', 'date', 'duration', 'pet_owner.user_name', 'pet_sitter.name', 'pet.pet_name') 
 
 class Pet(db.Model, SerializerMixin):
     __tablename__ = 'pets'
@@ -223,6 +168,7 @@ class Pet(db.Model, SerializerMixin):
 
     owner_id = db.Column(db.Integer, db.ForeignKey('pet_owners.id'), nullable=False)
     pet_owner = db.relationship('PetOwner', back_populates='pets')
+    appointments = db.relationship('Appointment', back_populates='pet', lazy=True)
 
 
     @validates('pet_name')

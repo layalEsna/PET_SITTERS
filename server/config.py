@@ -8,17 +8,26 @@ from flask_migrate import Migrate
 from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
+from flask_login import LoginManager
 import os
-
+basedir = os.path.abspath(os.path.dirname(__file__))
 # Local imports
 
 # Instantiate app, set attributes
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///instance/app.db'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(basedir, 'instance', 'app.db')}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.json.compact = False
 
 CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})  # Allow CORS for the React frontend
+# CORS(app, resources={r"/*": {"origins": "*"}})
+
+
+login_manager = LoginManager(app)
+login_manager.init_app(app)
+
 
 app.config['SECRET_KEY'] = os.environ.get('FLASK_SECRET_KEY') 
 app.config['SESSION_TYPE'] = 'filesystem'

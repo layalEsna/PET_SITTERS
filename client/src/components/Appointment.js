@@ -167,86 +167,86 @@
 
 
 
-                // <div>
-                //     <label htmlFor="pet_name">Pet Name</label>
-                //     <input
-                //         id="pet_name"
-                //         type="text"
-                //         name="pet_name"
-                //         value={formik.values.pet_name}
-                //         onBlur={formik.handleBlur}
-                //         onChange={formik.handleChange}
+// <div>
+//     <label htmlFor="pet_name">Pet Name</label>
+//     <input
+//         id="pet_name"
+//         type="text"
+//         name="pet_name"
+//         value={formik.values.pet_name}
+//         onBlur={formik.handleBlur}
+//         onChange={formik.handleChange}
 
-                //     />
-                //     {formik.errors.pet_name && formik.touched.pet_name && (
-                //         <div className="error">{formik.errors.pet_name}</div>
-                //     )}
-                // </div>
-                // <br />
-                // <div>
-                //     <label htmlFor="pet_type">Pet Type</label>
-                //     <select
-                //         id="pet_type"
-                //         value={formik.values.pet_type}
-                //         onChange={formik.handleChange}
-                //         onBlur={formik.handleBlur}
-                //     >
-                //         <option value=''>select one</option>
-                //         <option value='cat'>cat</option>
-                //         <option value='dog'>dog</option>
-                //         <option value='bird'>bird</option>
-                //     </select>
-                //     {formik.errors.pet_type && formik.touched.pet_type && (
-                //         <div className="error">{formik.errors.pet_type}</div>
-                //     )}
-                // </div>
-                // <br />
-                // <div>
-                //     <label htmlFor="date">Date</label>
-                //     <input
-                //         id="date"
-                //         type="date"
-                //         name="date"
-                //         value={formik.values.date}
-                //         onBlur={formik.handleBlur}
-                //         onChange={formik.handleChange}
+//     />
+//     {formik.errors.pet_name && formik.touched.pet_name && (
+//         <div className="error">{formik.errors.pet_name}</div>
+//     )}
+// </div>
+// <br />
+// <div>
+//     <label htmlFor="pet_type">Pet Type</label>
+//     <select
+//         id="pet_type"
+//         value={formik.values.pet_type}
+//         onChange={formik.handleChange}
+//         onBlur={formik.handleBlur}
+//     >
+//         <option value=''>select one</option>
+//         <option value='cat'>cat</option>
+//         <option value='dog'>dog</option>
+//         <option value='bird'>bird</option>
+//     </select>
+//     {formik.errors.pet_type && formik.touched.pet_type && (
+//         <div className="error">{formik.errors.pet_type}</div>
+//     )}
+// </div>
+// <br />
+// <div>
+//     <label htmlFor="date">Date</label>
+//     <input
+//         id="date"
+//         type="date"
+//         name="date"
+//         value={formik.values.date}
+//         onBlur={formik.handleBlur}
+//         onChange={formik.handleChange}
 
-                //     />
-                //     {formik.errors.date && formik.touched.date && (
-                //         <div className="error">{formik.errors.date}</div>
-                //     )}
-                // </div>
-                // <br />
-                // <div>
-                //     <label htmlFor="duration">Duration</label>
-                //     <select
-                //         id="duration"
-                //         name="duration"
-                //         value={formik.values.duration}
-                //         onChange={e => formik.setFieldValue('duration', parseInt(e.target.value))}
-                //         onBlur={formik.handleBlur}
-                //     >
-                //         <option value=''>select one</option>
-                //         <option value='1'>1 day</option>
-                //         <option value='2'>2 days</option>
-                //         <option value='3'>3 days</option>
-                //         <option value='4'>4 days</option>
-                //         <option value='5'>5 days</option>
-                //         <option value='6'>6 days</option>
-                //         <option value='7'>7 days</option>
-                //         <option value='8'>8 days</option>
-                //         <option value='9'>9 days</option>
-                //         <option value='10'>10 days</option>
-                //     </select>
-                //     {formik.errors.duration && formik.touched.duration && (
-                //         <div className="error">{formik.errors.duration}</div>
-                //     )}
-                // </div>
-                // <br />
-                // <div>
-                //     <button type="submit">submit</button>
+//     />
+//     {formik.errors.date && formik.touched.date && (
+//         <div className="error">{formik.errors.date}</div>
+//     )}
+// </div>
+// <br />
+// <div>
+//     <label htmlFor="duration">Duration</label>
+//     <select
+//         id="duration"
+//         name="duration"
+//         value={formik.values.duration}
+//         onChange={e => formik.setFieldValue('duration', parseInt(e.target.value))}
+//         onBlur={formik.handleBlur}
+//     >
+//         <option value=''>select one</option>
+//         <option value='1'>1 day</option>
+//         <option value='2'>2 days</option>
+//         <option value='3'>3 days</option>
+//         <option value='4'>4 days</option>
+//         <option value='5'>5 days</option>
+//         <option value='6'>6 days</option>
+//         <option value='7'>7 days</option>
+//         <option value='8'>8 days</option>
+//         <option value='9'>9 days</option>
+//         <option value='10'>10 days</option>
+//     </select>
+//     {formik.errors.duration && formik.touched.duration && (
+//         <div className="error">{formik.errors.duration}</div>
+//     )}
+// </div>
+// <br />
+// <div>
+//     <button type="submit">submit</button>
 
-                // </div>
+// </div>
 
 
 //                 
@@ -334,19 +334,20 @@ function Appointment() {
                 .max(10, "Duration must be between 1 and 10 inclusive."),
         }),
         onSubmit: (values) => {
-          console.log("User ID from sessionStorage:", sessionStorage.getItem("user_id"));
+            console.log("Form submitted with values:", values)
+            console.log("User ID from sessionStorage:", sessionStorage.getItem("user_id"));
 
-            fetch('http://127.0.0.1:5000/appointment', {
+            fetch('http://127.0.0.1:5000/appointments', {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-              },
+                },
                 credentials: "include",
                 body: JSON.stringify({
                     ...values,
                     sitter_id: id,
                     // sitter_name,
-                    pet_owners_id: sessionStorage.getItem("user_id")
+                    // pet_owners_id: sessionStorage.getItem("user_id")
                 })
                 // body: JSON.stringify({
                 //     ...values,
@@ -362,7 +363,7 @@ function Appointment() {
                 })
                 .then((data) => {
                     const newMessage = {
-                        id: data.id, 
+                        id: data.id,
                         pet_name: values.pet_name,
                         pet_type: values.pet_type,
                         date: values.date,
@@ -442,6 +443,10 @@ function Appointment() {
         // Remove the generic alert message as it might be misleading
     }
 
+
+
+
+
     return (
         <div>
             <div>
@@ -452,88 +457,88 @@ function Appointment() {
 
 
 
+            <form onSubmit={formik.handleSubmit}>
 
-                <form onSubmit={formik.handleSubmit}>
 
-                    <div>
-                        <label htmlFor="pet_name">Pet Name</label>
-                        <input
-                            id="pet_name"
-                            type="text"
-                            name="pet_name"
-                            value={formik.values.pet_name}
-                            onBlur={formik.handleBlur}
-                            onChange={formik.handleChange}
+                <div>
+                    <label htmlFor="pet_name">Pet Name</label>
+                    <input
+                        id="pet_name"
+                        type="text"
+                        name="pet_name"
+                        value={formik.values.pet_name}
+                        onBlur={formik.handleBlur}
+                        onChange={formik.handleChange}
 
-                        />
-                        {formik.errors.pet_name && formik.touched.pet_name && (
-                            <div className="error">{formik.errors.pet_name}</div>
-                        )}
-                    </div>
-                    <br />
-                    <div>
-                        <label htmlFor="pet_type">Pet Type</label>
-                        <select
-                            id="pet_type"
-                            value={formik.values.pet_type}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                        >
-                            <option value=''>select one</option>
-                            <option value='cat'>cat</option>
-                            <option value='dog'>dog</option>
-                            <option value='bird'>bird</option>
-                        </select>
-                        {formik.errors.pet_type && formik.touched.pet_type && (
-                            <div className="error">{formik.errors.pet_type}</div>
-                        )}
-                    </div>
-                    <br />
-                    <div>
-                        <label htmlFor="date">Date</label>
-                        <input
-                            id="date"
-                            type="date"
-                            name="date"
-                            value={formik.values.date}
-                            onBlur={formik.handleBlur}
-                            onChange={formik.handleChange}
+                    />
+                    {formik.errors.pet_name && formik.touched.pet_name && (
+                        <div className="error">{formik.errors.pet_name}</div>
+                    )}
+                </div>
+                <br />
+                <div>
+                    <label htmlFor="pet_type">Pet Type</label>
+                    <select
+                        id="pet_type"
+                        value={formik.values.pet_type}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                    >
+                        <option value=''>select one</option>
+                        <option value='cat'>cat</option>
+                        <option value='dog'>dog</option>
+                        <option value='bird'>bird</option>
+                    </select>
+                    {formik.errors.pet_type && formik.touched.pet_type && (
+                        <div className="error">{formik.errors.pet_type}</div>
+                    )}
+                </div>
+                <br />
+                <div>
+                    <label htmlFor="date">Date</label>
+                    <input
+                        id="date"
+                        type="date"
+                        name="date"
+                        value={formik.values.date}
+                        onBlur={formik.handleBlur}
+                        onChange={formik.handleChange}
 
-                        />
-                        {formik.errors.date && formik.touched.date && (
-                            <div className="error">{formik.errors.date}</div>
-                        )}
-                    </div>
-                    <br />
-                    <div>
-                        <label htmlFor="duration">Duration</label>
-                        <select
-                            id="duration"
-                            name="duration"
-                            value={formik.values.duration}
-                            onChange={e => formik.setFieldValue('duration', parseInt(e.target.value))}
-                            onBlur={formik.handleBlur}
-                        >
-                            <option value=''>select one</option>
-                            <option value='1'>1 day</option>
-                            <option value='2'>2 days</option>
-                            <option value='3'>3 days</option>
-                            <option value='4'>4 days</option>
-                            <option value='5'>5 days</option>
-                            <option value='6'>6 days</option>
-                            <option value='7'>7 days</option>
-                            <option value='8'>8 days</option>
-                            <option value='9'>9 days</option>
-                            <option value='10'>10 days</option>
-                        </select>
-                        {formik.errors.duration && formik.touched.duration && (
-                            <div className="error">{formik.errors.duration}</div>
-                        )}
-                    </div>
-                    <br />
-                    <div>
-                        <button type="submit">submit</button>
-                    </div>
+                    />
+                    {formik.errors.date && formik.touched.date && (
+                        <div className="error">{formik.errors.date}</div>
+                    )}
+                </div>
+                <br />
+                <div>
+                    <label htmlFor="duration">Duration</label>
+                    <select
+                        id="duration"
+                        name="duration"
+                        value={formik.values.duration}
+                        onChange={e => formik.setFieldValue('duration', parseInt(e.target.value))}
+                        onBlur={formik.handleBlur}
+                    >
+                        <option value=''>select one</option>
+                        <option value='1'>1 day</option>
+                        <option value='2'>2 days</option>
+                        <option value='3'>3 days</option>
+                        <option value='4'>4 days</option>
+                        <option value='5'>5 days</option>
+                        <option value='6'>6 days</option>
+                        <option value='7'>7 days</option>
+                        <option value='8'>8 days</option>
+                        <option value='9'>9 days</option>
+                        <option value='10'>10 days</option>
+                    </select>
+                    {formik.errors.duration && formik.touched.duration && (
+                        <div className="error">{formik.errors.duration}</div>
+                    )}
+                </div>
+                <br />
+                <div>
+                    <button type="submit">submit</button>
+                </div>
 
 
 
@@ -543,19 +548,19 @@ function Appointment() {
                 <h2>Your Appointments:</h2>
                 <ol>
                     {confirmationMessage
-                        .filter((appointment)=> appointment.sitter_id === parseInt(id))
+                        .filter((appointment) => appointment.sitter_id === parseInt(id))
                         .map((appointment, index) => (
-                        <li key={appointment.id || index}>
-                            {`Appointment with: ${sitter.name} Pet Name: ${appointment.pet_name} Pet Type: ${appointment.pet_type} Date: ${appointment.date} Duration: ${appointment.duration} days, price: $${appointment.sitter_price}`}
-                            <br />
-                            <button onClick={() => handleEdit(appointment.id)}>
-                                edit appointment
-                            </button>
-                            <button onClick={() => handleDelete(appointment.id)}>
-                                delete appointment
-                            </button>
-                        </li>
-                    ))}
+                            <li key={appointment.id || index}>
+                                {`Appointment with: ${sitter.name} Pet Name: ${appointment.pet_name} Pet Type: ${appointment.pet_type} Date: ${appointment.date} Duration: ${appointment.duration} days, price: $${appointment.sitter_price}`}
+                                <br />
+                                <button onClick={() => handleEdit(appointment.id)}>
+                                    edit appointment
+                                </button>
+                                <button onClick={() => handleDelete(appointment.id)}>
+                                    delete appointment
+                                </button>
+                            </li>
+                        ))}
                 </ol>
             </div>
         </div>
@@ -568,4 +573,3 @@ export default Appointment;
 
 
 
-  
